@@ -1,7 +1,7 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 public class DBHandler
 {
@@ -32,10 +32,8 @@ public class DBHandler
 			System.out.println("Failed to connect to the database");
 			e.printStackTrace();
 		}
-
-
 		closeConnection();
-
+		createPlaylist("Test");
 	}
 
 	private void openConnection()
@@ -56,8 +54,14 @@ public class DBHandler
 		openConnection();
 		try
 		{
-			Statement stmt = connection.createStatement();
-			stmt.execute("CREATE TABLE " + name + " (id int PRIMARY KEY, name VARCHAR(255), path VARCHAR(255));");
+			PreparedStatement pstmtCreateTable = connection.prepareStatement("CREATE TABLE " + name + " (id int PRIMARY KEY, name VARCHAR(255), path VARCHAR(255));");
+			pstmtCreateTable.executeUpdate();
+			pstmtCreateTable.close();
+
+			PreparedStatement pstmtInsertPlaylist = connection.prepareStatement("Insert into Playlists (titel) values (?);");
+			pstmtInsertPlaylist.setString(1, name);
+			pstmtInsertPlaylist.executeUpdate();
+			pstmtInsertPlaylist.close();
 		}
 		catch (SQLException e)
 		{
