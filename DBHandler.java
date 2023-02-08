@@ -54,7 +54,7 @@ public class DBHandler
 		openConnection();
 		try
 		{
-			PreparedStatement pstmtCreateTable = connection.prepareStatement("CREATE TABLE " + name + " (id int PRIMARY KEY, name VARCHAR(255), path VARCHAR(255));");
+			PreparedStatement pstmtCreateTable = connection.prepareStatement("CREATE TABLE " + name + " (id int PRIMARY KEY, song_id int references songs(song_id));");
 			pstmtCreateTable.executeUpdate();
 			pstmtCreateTable.close();
 
