@@ -42,7 +42,7 @@ public class DBHandler
         openConnection();
         try
         {
-            PreparedStatement pstmtCreateTable = connection.prepareStatement("CREATE TABLE " + name + " (id int PRIMARY KEY, song_id int references songs(song_id));");
+            PreparedStatement pstmtCreateTable = connection.prepareStatement("CREATE TABLE " + name + " (id int PRIMARY KEY, song_id int, constraint song_fk foreign key (song_id) references songs(song_id));");
             pstmtCreateTable.executeUpdate();
             pstmtCreateTable.close();
 
@@ -98,7 +98,8 @@ public class DBHandler
             pstmtDeletePlaylist.setInt(1, playlist_id);
             pstmtDeletePlaylist.executeUpdate();
             pstmtDeletePlaylist.close();
-            PreparedStatement pstmtDropPlaylist = connection.prepareStatement("Drop Table" + playlist_name + " ;");
+
+            PreparedStatement pstmtDropPlaylist = connection.prepareStatement("Drop Table "+ playlist_name+ " ;");
             pstmtDropPlaylist.executeUpdate();
             pstmtDropPlaylist.close();
         }
