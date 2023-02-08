@@ -71,6 +71,25 @@ public class DBHandler
         }
     }
 
+    public void addSong(String titel)
+    {
+        openConnection();
+        try
+        {
+            PreparedStatement pstmtAdd = connection.prepareStatement("Insert into songs (Titel) values (?);");
+            pstmtAdd.setString(1, titel);
+            pstmtAdd.executeUpdate();
+            pstmtAdd.close();
+        }
+        catch(SQLException e)
+        {
+            System.out.println("Failed to create statement");
+            e.printStackTrace();
+        }
+
+        closeConnection();
+    }
+
     public void addSongToPlaylist(String playlist, int song_id)
     {
         openConnection();
