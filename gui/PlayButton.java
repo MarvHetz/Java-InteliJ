@@ -11,7 +11,7 @@ public class PlayButton extends JButton
 		isPlaying = false;
 	}
 
-	public void play()
+	public void play(Player player)
 	{
 		if (isPlaying)
 		{
