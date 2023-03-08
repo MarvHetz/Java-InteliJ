@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.javafxuebung.Login">
+   <children>
+      <Label fx:id="lblPassword" layoutX="106.0" layoutY="219.0" />
+      <Label fx:id="lblLanguage" layoutX="434.0" layoutY="36.0" />
+      <ComboBox fx:id="comboBoxLanguage" layoutX="489.0" layoutY="32.0" onAction="#languageSelection" prefHeight="25.0" prefWidth="72.0" />
+      <Label fx:id="lblWelcome" layoutX="242.0" layoutY="123.0" />
+      <Label fx:id="lblUsername" layoutX="106.0" layoutY="183.0" />
+      <TextField fx:id="txtUsername" layoutX="209.0" layoutY="179.0" />
+      <TextField fx:id="txtPassword" layoutX="209.0" layoutY="215.0" />
+      <Button fx:id="btnLogin" layoutX="258.0" layoutY="299.0" mnemonicParsing="false" onAction="#onLogin" />
+   </children>
+</AnchorPane>
