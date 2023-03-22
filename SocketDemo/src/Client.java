@@ -12,7 +12,7 @@ public class Client
     {
         try
         {
-            Socket client = new Socket("172.16.225.2", 8006);
+            Socket client = new Socket("localhost", 8006);
             System.out.println("Client gestartet");
 
             OutputStream out = client.getOutputStream();
