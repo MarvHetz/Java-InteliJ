@@ -14,15 +14,15 @@ public class Server
 
 	public Server()
 	{
+		System.out.println("Server gestartet");
 		clients = new ArrayList<>();
 		for (int i = 0; i < 3; i++)
 		{
 			try
 			{
 				ServerSocket server = new ServerSocket(8006);
-				System.out.println("Server gestartet");
-
 				Socket client = server.accept();
+				System.out.println(client);
 				server.close();
 
 				clients.add(new ClientProxy(client, this));

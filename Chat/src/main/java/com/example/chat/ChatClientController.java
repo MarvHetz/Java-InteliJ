@@ -33,7 +33,7 @@ public class ChatClientController implements Initializable
 		{
 			OutputStream out = client.getOutputStream();
 			PrintWriter writer = new PrintWriter(out);
-			writer.write(txtMessage.getText() + "\n");
+			writer.write(ApplicationClient.getName() + ": " + txtMessage.getText() + "\n");
 			writer.flush();
 		}catch (IOException e)
 		{
