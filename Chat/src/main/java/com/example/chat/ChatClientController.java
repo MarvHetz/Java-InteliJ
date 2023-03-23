@@ -35,6 +35,7 @@ public class ChatClientController implements Initializable
 			PrintWriter writer = new PrintWriter(out);
 			writer.write(ApplicationClient.getName() + ": " + txtMessage.getText() + "\n");
 			writer.flush();
+			txtMessage.clear();
 		}catch (IOException e)
 		{
 			System.out.println("Fehler beim Senden");

@@ -16,7 +16,8 @@ public class Server
 	{
 		System.out.println("Server gestartet");
 		clients = new ArrayList<>();
-		for (int i = 0; i < 3; i++)
+		//for (int i = 0; i < 3; i++)
+		while(true)
 		{
 			try
 			{
