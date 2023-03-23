@@ -51,7 +51,8 @@ public class ChatClientController implements Initializable
 			String s = null;
 			while((s = reader.readLine()) != null)
 			{
-				chat.add(s);
+				final String message = s;
+				Platform.runLater(() -> chat.add(message));
 			}
 			reader.close();
 		}
