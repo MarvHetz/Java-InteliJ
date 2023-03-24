@@ -13,11 +13,11 @@ public class ClientProxy
     {
         this.client = client;
         this.server = server;
-        clientThread = new Thread(() -> cummunicateWithClient());
+        clientThread = new Thread(() -> communicateWithClient());
         clientThread.start();
     }
 
-    private void cummunicateWithClient()
+    private void communicateWithClient()
     {
         try
         {

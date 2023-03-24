@@ -5,13 +5,16 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.geometry.Pos;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 
 import java.io.*;
 import java.net.Socket;
 import java.net.URL;
+import java.util.List;
 import java.util.Observable;
 import java.util.ResourceBundle;
 
@@ -24,7 +27,6 @@ public class ChatClientController implements Initializable
 	private TextField txtMessage;
 	@FXML
 	private ListView listChat;
-	private ObservableList<String> chat;
 
 	@FXML
 	private void sendMessage()
@@ -53,7 +55,7 @@ public class ChatClientController implements Initializable
 			while((s = reader.readLine()) != null)
 			{
 				final String message = s;
-				Platform.runLater(() -> chat.add(message));
+				Platform.runLater(() -> listChat.getItems().add(message));
 			}
 			reader.close();
 		}
@@ -66,8 +68,6 @@ public class ChatClientController implements Initializable
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle)
 	{
-		chat = FXCollections.observableArrayList();
-		listChat.setItems(chat);
 		try
 		{
 			client = new Socket("localhost", 8006);
@@ -78,6 +78,13 @@ public class ChatClientController implements Initializable
 			throw new RuntimeException(e);
 		}
 
+		settupListView();
+
 		new Thread(() -> checkForMessages()).start();
+	}
+
+	private void settupListView()
+	{
+
 	}
 }
