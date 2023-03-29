@@ -7,6 +7,7 @@ import java.util.ArrayList;
 public class Server
 {
 	private static ArrayList<ClientProxy> clients;
+	private ClientProxy currentSender;
 	public static void main(String[] args)
 	{
 		new Server();
@@ -35,13 +36,19 @@ public class Server
 		}
 	}
 
-	public void send(String message)
+	public ClientProxy getCurrentSender()
 	{
+		return currentSender;
+	}
+
+
+	public void send(Message o, ClientProxy currentSender)
+	{
+		this.currentSender = currentSender;
 		new Thread(() -> {
 			for (ClientProxy client : clients)
 			{
-				client.send(message);
+				client.send(o);
 			}}).start();
 	}
-
 }

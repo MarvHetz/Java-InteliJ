@@ -1,47 +1,18 @@
 package com.example.chat;
 
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import java.io.Serializable;
+import java.lang.reflect.Type;
 
-public class Message
+public abstract class Message implements Serializable
 {
-    private final String sender;
-    private String message;
-    private ImageView image;
-
-    public Message(String sender, String message, ImageView image)
+    private final Type type;
+    public Message(Type type)
     {
-        this.sender = sender;
-        this.message = message;
-        this.image = image;
-
-        this.image.setFitHeight(25);
-        this.image.setFitWidth(20);
+        this.type = type;
     }
 
-    public Message(String sender, String message)
+    public Type getType()
     {
-        this.sender = sender;
-        this.message = message;
-    }
-
-    public Message(String sender, ImageView image)
-    {
-        this.sender = sender;
-        this.image = image;
-    }
-    public ImageView getImage()
-    {
-        return image;
-    }
-
-    public String getSender()
-    {
-        return sender;
-    }
-
-    public String getMessage()
-    {
-        return message;
+        return type;
     }
 }

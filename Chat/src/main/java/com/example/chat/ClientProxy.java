@@ -1,5 +1,9 @@
 package com.example.chat;
 
+import com.example.chat.MessageTypes.ReceivedByClient;
+import com.example.chat.MessageTypes.ReceivedByServer;
+import com.example.chat.MessageTypes.TextMessage;
+
 import java.io.*;
 import java.net.Socket;
 
@@ -8,11 +12,13 @@ public class ClientProxy
     private final Server server;
     private Socket client;
     private Thread clientThread;
+    private ObjectOutputStream out;
 
-    public ClientProxy(Socket client, Server server)
+    public ClientProxy(Socket client, Server server) throws IOException
     {
         this.client = client;
         this.server = server;
+        out = new ObjectOutputStream(client.getOutputStream());
         clientThread = new Thread(() -> communicateWithClient());
         clientThread.start();
     }
@@ -21,36 +27,44 @@ public class ClientProxy
     {
         try
         {
+            ObjectInputStream in = new ObjectInputStream(client.getInputStream());
 
-            InputStream in = client.getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            Message o;
 
-            String s = null;
-
-            while((s = reader.readLine()) != null)
+            while((o =(Message) in.readObject()) != null)
             {
-                server.send(s);
+                System.out.println(o.getType());
+                if (o.getType() == TextMessage.class)
+                {
+                    TextMessage textMessage = (TextMessage) o;
+                    send(new ReceivedByServer());
+                    server.send(textMessage,this);
+                }
+                else if(o.getType() == ReceivedByClient.class)
+                {
+                    server.getCurrentSender().send(o);
+                }
             }
-            reader.close();
+            in.close();
         }
-        catch (IOException e)
+        catch (Exception e)
         {
             throw new RuntimeException(e);
         }
     }
 
-    public void send(String message)
+    public void send(Message o)
     {
-        try
-        {
-            OutputStream out = client.getOutputStream();
-            PrintWriter writer = new PrintWriter(out);
-            writer.write(message + "\n");
-            writer.flush();
-        }
-        catch (IOException e)
-        {
-            throw new RuntimeException(e);
-        }
+        new Thread(() -> {
+            try
+            {
+                out.writeObject(o);
+                out.reset();
+            }
+            catch (IOException e)
+            {
+                throw new RuntimeException(e);
+            }
+        }).start();
     }
 }

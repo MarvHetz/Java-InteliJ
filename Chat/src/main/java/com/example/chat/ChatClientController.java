@@ -1,21 +1,16 @@
 package com.example.chat;
 
+import com.example.chat.MessageTypes.ReceivedByClient;
+import com.example.chat.MessageTypes.ReceivedByServer;
+import com.example.chat.MessageTypes.TextMessage;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
 
 import java.io.*;
 import java.net.Socket;
 import java.net.URL;
-import java.util.List;
-import java.util.Observable;
 import java.util.ResourceBundle;
 
 public class ChatClientController implements Initializable
@@ -27,17 +22,16 @@ public class ChatClientController implements Initializable
 	private TextField txtMessage;
 	@FXML
 	private ListView listChat;
+	ObjectOutputStream out;
 
 	@FXML
 	private void sendMessage()
 	{
 		try
 		{
-			OutputStream out = client.getOutputStream();
-			PrintWriter writer = new PrintWriter(out);
-			writer.write(ApplicationClient.getName() + ": " + txtMessage.getText() + "\n");
-			writer.flush();
+			out.writeObject(new TextMessage(txtMessage.getText(), ApplicationClient.getName()));
 			txtMessage.clear();
+			out.reset();
 		}catch (IOException e)
 		{
 			System.out.println("Fehler beim Senden");
@@ -45,21 +39,51 @@ public class ChatClientController implements Initializable
 
 	}
 
+	private void sendMessage(Message o)
+	{
+		try
+		{
+			out.writeObject(o);
+			out.reset();
+		}catch (IOException e)
+		{
+			System.out.println("Fehler beim Senden");
+		}
+	}
+
 	private void checkForMessages()
 	{
 		try
 		{
-			InputStream in = client.getInputStream();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-			String s = null;
-			while((s = reader.readLine()) != null)
+			ObjectInputStream in = new ObjectInputStream(client.getInputStream());
+
+			Message o;
+
+			while((o =(Message) in.readObject()) != null)
 			{
-				final String message = s;
-				Platform.runLater(() -> listChat.getItems().add(message));
+
+				System.out.println(o.getType());
+				if (o.getType() == TextMessage.class)
+				{
+					TextMessage textMessage = (TextMessage) o;
+					Platform.runLater(() -> listChat.getItems().add(textMessage));
+					sendMessage(new ReceivedByClient(ApplicationClient.getName()));
+				}
+				else if(o.getType() == ReceivedByClient.class)
+				{
+					System.out.println("ReceivedByClient: "+((ReceivedByClient) o).getName());
+				}
+				else if (o.getType() == ReceivedByServer.class)
+				{
+					System.out.println("ReceivedByServer");
+				}
+				else
+				{
+					System.out.println("Unbekannter Typ");
+				}
 			}
-			reader.close();
 		}
-		catch (IOException e)
+		catch (Exception e)
 		{
 			throw new RuntimeException(e);
 		}
@@ -72,6 +96,7 @@ public class ChatClientController implements Initializable
 		{
 			client = new Socket("localhost", 8006);
 			System.out.println("Client gestartet");
+			out = new ObjectOutputStream(client.getOutputStream());
 		}
 		catch (IOException e)
 		{
